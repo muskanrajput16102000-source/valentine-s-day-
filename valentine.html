@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f5f0; /* Warm cream */
+            color: #8b5a3c; /* Muted red */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .handwritten {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+        }
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .show {
+            opacity: 1;
+        }
+        .slide-up {
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+        }
+        .slide-up.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        button {
+            background-color: #e8b4b8; /* Blush pink */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #d4a5a9;
+        }
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .heart {
+            position: absolute;
+            color: #e8b4b8;
+            font-size: 2em;
+            animation: float 10s infinite linear;
+        }
+        .heart:nth-child(odd) {
+            animation-duration: 12s;
+        }
+        .heart:nth-child(even) {
+            animation-duration: 15s;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        .envelope {
+            width: 200px;
+            height: 150px;
+            background-color: #f9f5f0;
+            border: 2px solid #8b5a3c;
+            position: relative;
+            margin: 20px auto;
+            transition: transform 0.5s;
+        }
+        .envelope.open {
+            transform: rotateX(180deg);
+        }
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-color: #e8b4b8;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+        }
+        .letter {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        .letter.show {
+            display: block;
+        }
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #e8b4b8;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .handwritten {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hearts">
+            <div class="heart" style="left: 10%; animation-delay: 0s;">❤️</div>
+            <div class="heart" style="left: 20%; animation-delay: 2s;">💖</div>
+            <div class="heart" style="left: 30%; animation-delay: 4s;">❤️</div>
+            <div class="heart" style="left: 40%; animation-delay: 6s;">💖</div>
+            <div class="heart" style="left: 50%; animation-delay: 8s;">❤️</div>
+            <div class="heart" style="left: 60%; animation-delay: 10s;">💖</div>
+            <div class="heart" style="left: 70%; animation-delay: 12s;">❤️</div>
+            <div class="heart" style="left: 80%; animation-delay: 14s;">💖</div>
+            <div class="heart" style="left: 90%; animation-delay: 16s;">❤️</div>
+        </div>
+
+        <!-- Section 1: Opening -->
+        <div id="opening" class="fade-in show">
+            <p class="handwritten">Hey.</p>
+            <p id="pause-text" class="fade-in" style="display: none;">This isn’t a big gesture.<br>It’s just something I wanted you to have.</p>
+            <button id="okay-btn" style="display: none;">Okay.</button>
+        </div>
+
+        <!-- Section 2: Small Things I Notice -->
+        <div id="observations" class="fade-in" style="display: none;">
+            <p class="handwritten" id="obs-line-1" style="display: none;">The way you calm a room without saying much.</p>
+            <p class="handwritten" id="obs-line-2" style="display: none;">How you listen more than you speak.</p>
+            <p class="handwritten" id="obs-line-3" style="display: none;">How you stay — even when things aren’t easy.</p>
+            <p class="handwritten" id="obs-line-4" style="display: none;">How you make space for me, without making it a big deal.</p>
+            <p id="obs-caption" style="display: none; margin-top: 20px;">These things matter more than you think.</p>
+            <button id="next-obs" style="display: none;">Next</button>
+        </div>
+
+        <!-- Section 3: What Being With You Feels Like -->
+        <div id="feelings" class="fade-in" style="display: none;">
+            <p class="handwritten" id="feel-line-1" class="slide-up" style="display: none;">With you, I don’t have to explain myself.</p>
+            <p class="handwritten" id="feel-line-2" class="slide-up" style="display: none;">I don’t feel rushed.</p>
+            <p class="handwritten" id="feel-line-3" class="slide-up" style="display: none;">I don’t feel judged.</p>
+            <p class="handwritten" id="feel-line-4" class="slide-up" style="display: none;">I just… exist. Safely.</p>
+            <button id="next-feel" style="display: none;">Continue</button>
+        </div>
+
+        <!-- Section 4: Playful Micro Interaction -->
+        <div id="playful" class="fade-in" style="display: none;">
+            <p class="handwritten">Quick check.</p>
+            <p>Are you pretending you’re not smiling right now?</p>
+            <button id="no-btn">No</button>
+            <button id="absolutely-btn">Absolutely not</button>
+            <p id="response" class="handwritten" style="display: none;">Yeah. Thought so.</p>
+            <button id="next-play" style="display: none;">Next</button>
+        </div>
+
+        <!-- Section 5: The Letter -->
+        <div id="letter-section" class="fade-in" style="display: none;">
+            <div class="envelope" id="envelope"></div>
+            <p>This part matters.</p>
+            <button id="open-btn">Open</button>
+            <div class="letter" id="letter">
+                <p class="handwritten">Happy Valentine’s Day.</p>
+                <p>Loving you hasn’t been about moments everyone can see.<br>It’s been about consistency, patience, and feeling safe.</p>
+                <p>You don’t always say much, but you show up in ways that stay with me.<br>You stay when things feel complicated.<br>You listen when I need space.<br>You choose us quietly — and that’s my favourite kind of love.</p>
+                <p>Being with you feels steady.<br>Like I don’t have to brace myself.<br>Like I’m allowed to soften.</p>
+                <p>I don’t need grand romance.<br>I just need you.</p>
+                <p>And I’m really glad I have you.</p>
+            </div>
+            <button id="next-letter" style="display: none;">Continue</button>
+        </div>
+
+        <!-- Section 6: After the Letter -->
+        <div id="afterglow" class="fade-in" style="display: none;">
+            <p class="handwritten" id="after-line-1" class="slide-up" style="display: none;">This is us.</p>
+            <p class="handwritten" id="after-line-2" class="slide-up" style="display: none;">Not loud.</p>
+            <p class="handwritten" id="after-line-3" class="slide-up" style="display: none;">But real.</p>
+            <button id="next-after" style="display: none;">Next</button>
+        </div>
+
+        <!-- Final Section -->
+        <div id="final" class="fade-in" style="display: none;">
+            <h1>Happy Valentine’s Day 🤍</h1>
+            <p>Thank you for being my person.</p>
+            <button id="come-here-btn">Come here.</button>
+            <p id="final-line" class="handwritten" style="display: none;">You are deeply loved — exactly as you are.</p>
+        </div>
+
+        <footer id="footer" style="display: none; margin-top: 40px;">
+            <p>Made with a lot of feeling and very little sleep.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Section 1: Opening
+        setTimeout(() => {
+            document.getElementById('pause-text').style.display = 'block';
+            document.getElementById('pause-text').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('okay-btn').style.display = 'inline-block';
+            }, 1000);
+        }, 2000);
+
+        document.getElementById('okay-btn').addEventListener('click', () => {
+            document.getElementById('opening').style.display = 'none';
+            document.getElementById('observations').style.display = 'block';
+            document.getElementById('observations').classList.add('show');
+            showObsLine(1);
+        });
+
+        // Section 2: Observations
+        let obsIndex = 1;
+        function showObsLine(index) {
+            document.getElementById(`obs-line-${index}`).style.display = 'block';
+            document.getElementById(`obs-line-${index}`).classList.add('show');
+            if (index < 4) {
+                document.getElementById('next-obs').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    document.getElementById('obs-caption').style.display = 'block';
+                    document.getElementById('obs-caption').classList.add('show');
+                    document.getElementById('next-obs').style.display = 'inline-block';
+                }, 1000);
+            }
+        }
+        document.getElementById('next-obs').addEventListener('click', () => {
+            obsIndex++;
+            if (obsIndex <= 4) {
+                showObsLine(obsIndex);
+            } else {
+                document.getElementById('observations').style.display = 'none';
+                document.getElementById('feelings').style.display = 'block';
+                document.getElementById('feelings').classList.add('show');
+                showFeelLine(1);
+            }
+        });
+
+        // Section 3: Feelings
+        let feelIndex = 1;
+        function showFeelLine(index) {
+            document.getElementById(`feel-line-${index}`).style.display = 'block';
+            document.getElementById(`feel-line-${index}`).classList.add('show');
+            if (index < 4) {
+                setTimeout(() => {
+                    document.getElementById('next-feel').style.display = 'inline-block';
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('next-feel').style.display = 'inline-block';
+                }, 2000);
+            }
+        }
+        document.getElementById('next-feel').addEventListener('click', () => {
+            feelIndex++;
+            if (feelIndex <= 4) {
+                showFeelLine(feelIndex);
+            } else {
+                document.getElementById('feelings').style.display = 'none';
+                document.getElementById('playful').style.display = 'block';
+                document.getElementById('playful').classList.add('show');
+            }
+        });
+
+        // Section 4: Playful
+        document.getElementById('no-btn').addEventListener('click', () => {
+            document.getElementById('response').style.display = 'block';
+            document.getElementById('response').classList.add('show');
+            document.getElementById('next-play').style.display = 'inline-block';
+        });
+        document.getElementById('absolutely-btn').addEventListener('click', () => {
+            document.getElementById('response').style.display = 'block';
+            document.getElementById('response').classList.add('show');
+            document.getElementById('next-play').style.display = 'inline-block';
+        });
+        document.getElementById('next-play').addEventListener('click', () => {
+            document.getElementById('playful').style.display = 'none';
+            document.getElementById('letter-section').style.display = 'block';
+            document.getElementById('letter-section').classList.add('show');
+        });
+
+        // Section 5: Letter
+        document.getElementById('open-btn').addEventListener('click', () => {
+            document.getElementById('envelope').classList.add('open');
+            setTimeout(() => {
+                document.getElementById('letter').classList.add('show');
+                document.getElementById('next-letter').style.display = 'inline-block';
+            }, 500);
+        });
+        document.getElementById('next-letter').addEventListener('click', () => {
+            document.getElementById('letter-section').style.display = 'none';
+            document.getElementById('afterglow').style.display = 'block';
+            document.getElementById('afterglow').classList.add('show');
+            showAfterLine(1);
+        });
+
+        // Section 6: Afterglow
+        let afterIndex = 1;
+        function showAfterLine(index) {
+            document.getElementById(`after-line-${index}`).style.display = 'block';
+            document.getElementById(`after-line-${index}`).classList.add('show');
+            if (index < 3) {
+                setTimeout(() => {
+                    document.getElementById('next-after').style.display = 'inline-block';
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('next-after').style.display = 'inline-block';
+                }, 2000);
+            }
+        }
+        document.getElementById('next-after').addEventListener('click', () => {
+            afterIndex++;
+            if (afterIndex <= 3) {
+                showAfterLine(afterIndex);
+            } else {
+                document.getElementById('afterglow').style.display = 'none';
+                document.getElementById('final').style.display = 'block';
+                document.getElementById('final').classList.add('show');
+            }
+        });
+
+        // Final Section
+        document.getElementById('come-here-btn').addEventListener('click', () => {
+            // Add confetti
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'confetti';
+            document.body.appendChild(confettiContainer);
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.animationDelay = Math.random() * 3 + 's';
+                confettiContainer.appendChild(piece);
+            }
+            setTimeout(() => {
+                document.getElementById('final-line').style.display = 'block';
+                document.getElementById('final-line').classList.add('show');
+                document.getElementById('footer').style.display = 'block';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
